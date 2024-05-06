@@ -1,3 +1,6 @@
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
+
 import { FatalErrorBoundary, RedwoodProvider } from '@redwoodjs/web'
 import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
 
@@ -11,6 +14,8 @@ const App = () => (
     <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">
       <RedwoodApolloProvider>
         <Routes />
+        <SpeedInsights />
+        <Analytics />
       </RedwoodApolloProvider>
     </RedwoodProvider>
   </FatalErrorBoundary>
