@@ -1,7 +1,4 @@
-// Example model schema from the Drizzle docs
-// https://orm.drizzle.team/docs/sql-schema-declaration
-
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   index,
   pgTableCreator,
@@ -10,19 +7,14 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
 export const createTable = pgTableCreator((name) => `wishing-well_${name}`);
 
-export const posts = createTable(
-  "post",
+export const wishlists = createTable(
+  "wishlist",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
+    name: varchar("name", { length: 256 }).notNull(),
+    description: varchar("description", { length: 512 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -30,7 +22,33 @@ export const posts = createTable(
       () => new Date(),
     ),
   },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
+  (wishlist) => ({
+    nameIndex: index("name_idx").on(wishlist.name),
   }),
 );
+
+export const products = createTable("product", {
+  id: serial("id").primaryKey(),
+  wishlistId: serial("wishlist_id").notNull(),
+  name: varchar("name", { length: 256 }).notNull(),
+  description: varchar("description", { length: 512 }),
+  url: varchar("url", { length: 512 }),
+  imageUrl: varchar("image_url", { length: 512 }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+    () => new Date(),
+  ),
+});
+
+export const wishlistsRelations = relations(wishlists, ({ many }) => ({
+  products: many(products),
+}));
+
+export const productsRelations = relations(products, ({ one }) => ({
+  wishlist: one(wishlists, {
+    fields: [products.wishlistId],
+    references: [wishlists.id],
+  }),
+}));
