@@ -8,6 +8,7 @@ expand(config());
 export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "production"]),
+    DATABASE_URL: z.string().url().startsWith("postgresql://"),
   },
   onValidationError: (error: ZodError) => {
     console.error(
@@ -18,5 +19,8 @@ export const env = createEnv({
   },
   client: {},
   emptyStringAsUndefined: true,
-  runtimeEnv: process.env,
+  runtimeEnv: {
+    NODE_ENV: process.env.NODE_ENV,
+    DATABASE_URL: process.env.DATABASE_URL,
+  },
 });
