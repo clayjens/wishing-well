@@ -11,12 +11,14 @@
     "db": "drizzle-kit"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.7.1",
     "@t3-oss/env-nextjs": "^0.11.1",
     "dotenv": "^16.4.5",
     "dotenv-expand": "^11.0.6",
     "drizzle-orm": "^0.35.2",
     "jiti": "^2.3.3",
     "next": "14.2.15",
+    "next-auth": "5.0.0-beta.23",
     "postgres": "^3.4.4",
     "react": "^18",
     "react-dom": "^18",
